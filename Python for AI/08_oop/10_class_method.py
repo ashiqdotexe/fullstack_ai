@@ -12,10 +12,15 @@ class BaseTea:
             order_dict["size"]
         )
     # The user can give string as well. We have to handle them as wwell
+    @classmethod
     def from_string(cls, order_string):
         tea_type, strength, size = order_string.split("-")
         return cls(tea_type, strength, size)
-
+class TeaUtills:
+    @staticmethod
+    def size_checker(size):
+        return size in ["small", "medium", "large"]
+print(TeaUtills.size_checker("light"))
 # calling dictionary
 dict_ = BaseTea.from_dict(
     {
@@ -25,4 +30,6 @@ dict_ = BaseTea.from_dict(
     }
 )
 print(dict_.__dict__)
-        
+# calling string
+string = BaseTea.from_string("Lemon-Light-Large")
+print(string.__dict__)
