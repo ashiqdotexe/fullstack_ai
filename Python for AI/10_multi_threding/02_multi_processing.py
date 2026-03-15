@@ -1,3 +1,4 @@
+# All the task done at a single time
 from multiprocessing import Process
 import time
 def serve_tea(name):
