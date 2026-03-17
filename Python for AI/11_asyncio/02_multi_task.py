@@ -1,6 +1,6 @@
 import asyncio
 import time
-
+# async never blocks any task.. It makes you wait but in non blocking way
 async def with_async(name):
     print(f"Preparing {name} tea")
     await asyncio.sleep(3)
