@@ -1,0 +1,15 @@
+{
+    "args": {},
+    "data": "",
+    "files": {},
+    "form": {},
+    "headers": {
+        "Accept": "*/*",
+        "Accept-Encoding": "gzip, deflate, br",
+        "Host": "httpbin.org",
+        "User-Agent": "Python/3.13 aiohttp/3.13.2",
+        "X-Amzn-Trace-Id": "Root=1-69ba2698-403e2a4a27e2f8fd09a154fa"
+    },
+    "origin": "103.87.214.163",
+    "url": "https://httpbin.org/delay/2"
+}
