@@ -9,3 +9,4 @@ class Product(BaseModel):
 product_one = Product(id=1, name = "Laptop", price=29.99, in_stock=False)
 product_two = Product(id=1, name = "Mouse", price=90.12)
 print(product_one)
+product_three = Product(name="keyboard")
