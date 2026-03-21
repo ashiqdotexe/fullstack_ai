@@ -2,6 +2,9 @@ from pydantic import BaseModel, Field
 from typing import List, Dict, Optional
 
 class User(BaseModel):
+    """
+    This is a data recording system of an employee
+    """
     name : str = Field(
         ..., # These three dots means these fields are mandatory
         min_length= 3,
@@ -22,3 +25,4 @@ user_data_1 = {
 }
 user_1 = User(**user_data_1)
 print(f"Employee name is {user_1.name} and his salary is {user_1.salary}")
+print(user_1.__doc__)
