@@ -9,10 +9,20 @@ class Person(BaseModel):
             raise ValueError("Names must be in capital later")
         return v 
     
+class User(BaseModel):
+    email : str
+    @field_validator("email")
+    def data_transformation(cls, v):
+        return v.lower().strip()
+    
 person = {
-    "first_name" : "Ashiq",
+    "first_name" : "Ashiq", #change it to "ashiq" to see the error
     "last_name" : "Sohan"
 }
 person_1 = Person(**person)
 print(person_1.model_dump())
-    
+user = {
+    "email" : "Ashiqur@bigibyte.com"
+}
+user_1 = User(**user)
+print(user_1)
