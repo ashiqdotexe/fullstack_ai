@@ -1,4 +1,6 @@
 from pydantic import BaseModel, field_validator, model_validator
+from datetime import datetime
+from typing_extensions import Self
 
 class Person(BaseModel):
     first_name : str 
@@ -29,7 +31,7 @@ print(user_1)
 
 class Product(BaseModel):
     price : str # $4.44
-    @field_validator("price")
+    @field_validator("price") # we have to check the price's datatype before conversion thats why mode = before
     def datatype_converter(cls, v):
         if isinstance(v, str):
             return float(v.replace("$", ""))
@@ -39,3 +41,19 @@ product = {
 } 
 product_1 = Product(**product)
 print(product_1)
+
+class DataRangeValidator(BaseModel):
+    start_date : datetime
+    end_date : datetime
+    @model_validator(mode="after")
+    def date_checker(self) -> Self:
+        if self.start_date >= self.end_date:
+            raise ValueError("End date must be greater than Start date")
+        return self 
+
+date_time = {
+    "start_date" : "2026-03-23 15:45:00",
+    "end_date" : "2026-03-24 15:45:00"
+}
+date_validation = DataRangeValidator(**date_time)
+print(date_validation)
