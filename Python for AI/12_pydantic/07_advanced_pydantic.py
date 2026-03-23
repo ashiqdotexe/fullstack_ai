@@ -26,3 +26,16 @@ user = {
 }
 user_1 = User(**user)
 print(user_1)
+
+class Product(BaseModel):
+    price : str # $4.44
+    @field_validator("price")
+    def datatype_converter(cls, v):
+        if isinstance(v, str):
+            return float(v.replace("$", ""))
+        return v
+product = {
+    "price" : "$4.67"
+} 
+product_1 = Product(**product)
+print(product_1)
