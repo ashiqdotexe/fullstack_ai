@@ -28,4 +28,6 @@ user_1 = {
 }
 user = User(**user_1)
 print(user) # Normal printing
-print("="*30)    
+print("="*30)
+dict_str = user.model_dump()
+print(dict_str)    
