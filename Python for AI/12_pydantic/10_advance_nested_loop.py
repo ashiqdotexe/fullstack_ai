@@ -23,3 +23,28 @@ person_1 = {
 }
 person = Person(**person_1)
 print(person)
+
+# Mixing up data type
+class TextContent(BaseModel):
+    type : str = "Text content"
+    content : str 
+class ImageContent(BaseModel):
+    type : str = "Image content"
+    image_url : str 
+    alt_text : Optional[str] = None 
+class WebContent(BaseModel):
+    title : str 
+    section : Optional[List[Union[TextContent, ImageContent]]] = None
+
+webcontent_1 = {
+    "title" : "Tocolabs web",
+    "section" : [{
+        "content" : "This is the website"
+    },
+    {
+        "image_url" : "this is the url"
+    }
+    ]
+}
+web = WebContent(**webcontent_1)
+print(web) 
