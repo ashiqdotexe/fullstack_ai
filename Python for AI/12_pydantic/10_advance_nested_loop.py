@@ -48,3 +48,72 @@ webcontent_1 = {
 }
 web = WebContent(**webcontent_1)
 print(web) 
+
+class Country(BaseModel):
+    name : str 
+    country_code : str 
+class State(BaseModel):
+    name : str
+    state_code : str 
+    country : Country
+class City(BaseModel):
+    name : str 
+    state : State 
+class Address(BaseModel):
+    street : str 
+    city : City 
+class Organization(BaseModel):
+    name : str 
+    address : Address
+    branches : Optional[List[Address]]
+
+organization_1 = {
+    "name": "Tocolabs",
+    "address" : {
+        "street" : "uttara dhaka",
+        "city" : {
+            "name" : "Dhaka",
+            "state" :{
+                "name" : "Dhaka",
+                "state_code" : "1230",
+                "country" : {
+                    "name" : "Bangladesh",
+                    "country_code" : "BAN"
+                }
+            }
+        }
+    },
+    "branches" : [
+            {
+        "street" : "uttara dhaka",
+        "city" : {
+            "name" : "Dhaka",
+            "state" :{
+                "name" : "Dhaka",
+                "state_code" : "1230",
+                "country" : {
+                    "name" : "Bangladesh",
+                    "country_code" : "BAN"
+                }
+            }
+        }
+    },
+    {
+        "street" : "uttara dhaka",
+        "city" : {
+            "name" : "Dhaka",
+            "state" :{
+                "name" : "Dhaka",
+                "state_code" : "1230",
+                "country" : {
+                    "name" : "Bangladesh",
+                    "country_code" : "BAN"
+                }
+            }
+        }
+    }
+        
+    ]
+}
+organization = Organization(**organization_1)
+print(organization)
