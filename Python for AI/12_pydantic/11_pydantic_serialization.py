@@ -30,4 +30,7 @@ user = User(**user_1)
 print(user) # Normal printing
 print("="*30)
 dict_str = user.model_dump()
-print(dict_str)    
+print(dict_str) 
+print("="*30)
+json_str = user.model_dump_json()
+print(json_str)     
