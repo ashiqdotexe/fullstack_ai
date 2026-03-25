@@ -15,3 +15,5 @@ print("="*30)
 # Decoding - >
 decoded_text = encode.decode([25216, 11, 3673, 1308, 382, 23582, 24366, 13, 3673, 8340, 9373, 382, 13332, 13, 1958, 922, 8340, 13332, 259, 382, 75127, 658, 3578])
 print(f"Decoding {encoded_text}. The text is- {decoded_text}")
+
+## Website to check- https://tiktokenizer.vercel.app/
