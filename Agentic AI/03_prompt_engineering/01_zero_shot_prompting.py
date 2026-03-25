@@ -14,11 +14,11 @@ response = client.chat.completions.create(
     messages=[
         {
             "role" : "system", 
-            "content" : "Your task is only to answer math related question. If the query related other than maths, just say sorry. Do not answer the question" #Zero shot prompting
+            "content" : "Your task is only to answer coding related question." #Zero shot prompting
         }, 
         {
             "role" : "user",
-            "content": "What is 2+4" 
+            "content": "What is a+b whole square?" # The model will still anser the question
         }
     ]
 )
