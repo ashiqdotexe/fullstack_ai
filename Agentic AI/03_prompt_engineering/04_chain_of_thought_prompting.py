@@ -42,7 +42,7 @@ response = client.chat.completions.create(
     response_format={"type" : "json_object"},
     messages=[
         {
-            "role" : "System", 
+            "role" : "system", 
             "content" : SYSTEM_PROMPT 
         },
         {
@@ -51,3 +51,4 @@ response = client.chat.completions.create(
         }
     ]
 )
+print(response.choices[0].message.content)
