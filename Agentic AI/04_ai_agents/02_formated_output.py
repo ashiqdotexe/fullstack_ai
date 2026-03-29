@@ -87,28 +87,27 @@ message_history.append(
 )
 
 while True:
-    response = client.chat.completions.create(
-    model="llama-3.3-70b-versatile",
-    response_format={"type": "json_object"},
+    response = client.chat.completions.parse(
+    model="meta-llama/llama-4-scout-17b-16e-instruct", # We have to use this model because the older model does not support structured output
+    response_format=CustomFormat,
     messages= message_history)
-    raw_response = response.choices[0].message.content
+    raw_response = response.choices[0].message.parsed
     message_history.append(
         {
             "role" : "assistant",
-            "content" : raw_response
+            "content" : raw_response.model_dump_json()
         }
     )
-    parsed_response = json.loads(raw_response)
 
-    if parsed_response.get("step") == "START":
-        print(f"🔥{parsed_response.get("content")}")
+    if raw_response.step == "START":
+        print(f"🔥{raw_response.content}")
         continue
-    if parsed_response.get("step") == "PLAN":
-        print(f"💭{parsed_response.get("content")}")
+    if raw_response.step == "PLAN":
+        print(f"💭{raw_response.content}")
         continue
-    if parsed_response.get("step") == "TOOL":
-        tool_to_use = parsed_response.get("tool")
-        input_to_use = parsed_response.get("input")
+    if raw_response.step == "TOOL":
+        tool_to_use = raw_response.tool
+        input_to_use = raw_response.input
         tool_response = available_tools[tool_to_use](input_to_use) # Calling the function
         message_history.append(
             {
@@ -122,8 +121,8 @@ while True:
 }
         )
         continue
-    if parsed_response.get("step") == "OUTPUT":
-        print(f"🤖{parsed_response.get("content")}")
+    if raw_response.step == "OUTPUT":
+        print(f"🤖{raw_response.content}")
         break
 
 print("\n \n")
