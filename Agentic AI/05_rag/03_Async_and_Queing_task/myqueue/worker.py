@@ -1,6 +1,7 @@
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_qdrant import QdrantVectorStore
 from openai import OpenAI
+from client.client_rq import celery_app
 from dotenv import load_dotenv
 import os 
 
@@ -19,6 +20,7 @@ vector_db = QdrantVectorStore.from_existing_collection(
     embedding=embedding_model
 )
 
+@celery_app.task
 def retrive_result(user_query:str):
     
     search_result = vector_db.similarity_search(query=user_query)

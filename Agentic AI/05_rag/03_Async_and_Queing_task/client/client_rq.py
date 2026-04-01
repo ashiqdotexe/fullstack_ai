@@ -1,8 +1,7 @@
-from redis import Redis
-from rq import Queue
+from celery import Celery
 
-queue = Queue(connection=Redis(
-    host="localhost",
-    port=6379
-))
-queue.enqueue()
+celery_app = Celery(
+    "task",
+    broker="redis://localhost:6379/0",
+    backend="redis://localhost:6379/0"
+)
