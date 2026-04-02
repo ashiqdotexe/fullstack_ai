@@ -1,6 +1,8 @@
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_qdrant import QdrantVectorStore
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 from openai import OpenAI
+from langchain_community.document_loaders import PyPDFLoader
 from client.client_rq import celery_app
 from dotenv import load_dotenv
 import os 
@@ -80,3 +82,24 @@ def retrive_result(user_query:str):
         ]
     )
     return response.choices[0].message.content
+
+@celery_app.task
+def process_file(file_path:str, file_name: str):
+    loader = PyPDFLoader(file_path=file_path)
+    docs = loader.load()
+    splitter = RecursiveCharacterTextSplitter(
+        chunk_size = 1000,
+        chunk_overlap = 100
+    )
+    chunk = splitter.split_documents(docs)
+    QdrantVectorStore.from_documents(
+        documents=chunk,
+        embedding= embedding_model,
+        collection_name="TEST Documents",
+        url = "http://localhost:6333/"
+    )
+    return {
+        "status" : "success",
+        "file_path" : file_path,
+        "file_name" : file_name
+    }
