@@ -20,7 +20,19 @@ def samplenode(state: State):
 The messages will be keep appending to the state
 
 """
+#building graph
+
+build_graph = StateGraph(State)
+
 # Registering nodes to state
 
-build_graph.add_node("Chatbot", chatbot)
-build_graph.add_node("Sample Node", samplenode)
+build_graph.add_node("chatbot", chatbot)
+build_graph.add_node("samplenode", samplenode)
+
+# Adding edges
+
+build_graph.add_edge(START, "chatbot") # This is the initial starting point START Node = chatbot
+build_graph.add_edge("chatbot", "samplenode") # This node refers to chatbot -> samplenode
+build_graph.add_edge("samplenode", END) # This is the Endnode which is = samplenode
+
+graph = build_graph.compile() # Compiling graph
