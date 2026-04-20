@@ -2,6 +2,19 @@ from typing_extensions import TypedDict
 from typing import Annotated
 from langgraph.graph.message import add_messages
 from langgraph.graph import StateGraph, START, END
+from langchain.chat_models import init_chat_model
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+GEMINI_API_KEY= os.getenv("GEMINI_API_KEY")
+
+llm = init_chat_model(
+    model="llama-3.3-70b-versatile",
+    model_provider="groq",
+    api_key=os.getenv("GROQ_API_KEY")
+)
 
 class State(TypedDict):
     messages : Annotated[list, add_messages]
@@ -10,8 +23,8 @@ build_graph = StateGraph(State)
 #Creating nodes
 
 def chatbot(state: State):
-    print(f"\n\nCurrently inside chatbotnode {state}")
-    return {"messages" : ["Hi This is chatbot tool"]}
+    response = llm.invoke(state.get("messages"))
+    return {"messages" : [response]}
 
 def samplenode(state: State):
     print(f"\n\nCurrently inside samplenode {state}")
