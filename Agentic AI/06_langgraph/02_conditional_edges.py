@@ -30,11 +30,32 @@ def chatbot(state: State):
             }
         ]
     )
-    return {"llm_output" : f"{response.choices[0].message.content}"}  
+    return {"llm_output" : f"{response.choices[0].message.content}"}
+
+def judge(state:State):
+    response = client.chat.completions.create(
+        model="meta-llama/llama-4-scout-17b-16e-instruct",
+        messages=[
+            {
+                "role": "system",
+                "content" : "You are a evalution generator. Your task is to find whethear the answer to the question is proper or not. If its proper then return 'yes' or else"
+                "return 'no'. Don't return anyother word other than yes or no "
+            },
+            {
+                "role" : "user",
+                "content" : f"Question: {state.get("user_query")}. Answer: {state.get("llm_output")}"
+            }
+        ]
+    )  
+    groq_answer = state.get("llm_output")
+    verdict = response.choices[0].message.content.strip().lower()
+    print(f"Groq answer: {groq_answer}")
+    print("Verdict is: ", verdict)
+    return {f"is_good": verdict =="yes"}
 
 def evaluation(state:State) -> Literal["endnode", "chatbot_gemini"]:
     print(f"Inside evalution")
-    if True:
+    if state.get("is_good"):
         return "endnode"
     return "chatbot_gemini"
 
@@ -62,10 +83,12 @@ def endnode(state:State):
 
 graph_builder = StateGraph(State)
 graph_builder.add_node("chatbot", chatbot)
+graph_builder.add_node("judge", judge)
 graph_builder.add_node("chatbot_gemini",chatbot_gemini)
 graph_builder.add_node("endnode", endnode)
 graph_builder.add_edge(START, "chatbot")
-graph_builder.add_conditional_edges("chatbot", evaluation)
+graph_builder.add_edge("chatbot", "judge")
+graph_builder.add_conditional_edges("judge", evaluation)
 graph_builder.add_edge("chatbot_gemini","endnode")
 graph_builder.add_edge("endnode", END)
 graph = graph_builder.compile()
