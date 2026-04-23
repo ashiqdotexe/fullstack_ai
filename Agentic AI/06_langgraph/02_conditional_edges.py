@@ -1,12 +1,12 @@
 from openai import OpenAI
-from typing_extensions import Optional, TypedDict
+from typing_extensions import Optional, TypedDict, Literal
 from dotenv import load_dotenv
 from langgraph.graph import START, END, StateGraph
 import os
 
 load_dotenv()
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
-
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 client = OpenAI(
     api_key=GROQ_API_KEY,
@@ -15,8 +15,8 @@ client = OpenAI(
 
 class State(TypedDict):
     user_query : str
-    llm_output = Optional[str]
-    is_good = Optional[bool]
+    llm_output : Optional[str]
+    is_good : Optional[bool]
 
 
 def chatbot(state: State):
@@ -29,8 +29,42 @@ def chatbot(state: State):
             }
         ]
     )
-    state.llm_output = response.choices[0].message.content
-    return state    
+    return {"llm_output" : f"{response.choices[0].message.content}"}  
+
+def evaluation(state:State) -> Literal["endnode", "chatbot_gemini"]:
+    if True:
+        return "endnode"
+    return "chatbot_gemini"
+
+def chatbot_gemini(state:State):
+    gemini_client = OpenAI(
+    api_key=GEMINI_API_KEY,
+    base_url= "https://generativelanguage.googleapis.com/v1beta/openai/"
+    )
+    response = gemini_client.chat.completions.create(
+        model="gemini-2.5-flash",
+        messages=[
+            {
+                "role":"user",
+                "content" : state.get("user_query")
+            }
+        ]   
+    )
+    return {"llm_output" : f"{response.choices[0].message.content}"}  
+
+def endnode(state:State):
+    return state
+
 
 graph_builder = StateGraph(State)
+graph_builder.add_node("chatbot", chatbot)
+graph_builder.add_node("chatbot_gemini",chatbot_gemini)
+graph_builder.add_node("endnode", endnode)
+graph_builder.add_edge(START, "chatbot")
+graph_builder.add_conditional_edges("chatbot", evaluation)
+graph_builder.add_edge("chatbot_gemini","endnode")
+graph_builder.add_edge("endnode", END)
+graph = graph_builder.compile()
+result = graph.invoke({"user_query": "Hey, what is 2+2?"})  # ✅ pass plain dict    
+print(result["llm_output"])
 
