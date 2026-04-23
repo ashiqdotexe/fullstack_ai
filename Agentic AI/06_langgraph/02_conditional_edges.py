@@ -20,6 +20,7 @@ class State(TypedDict):
 
 
 def chatbot(state: State):
+    print(f"Inside chatbot")
     response = client.chat.completions.create(
         model="meta-llama/llama-4-scout-17b-16e-instruct",
         messages=[
@@ -32,11 +33,13 @@ def chatbot(state: State):
     return {"llm_output" : f"{response.choices[0].message.content}"}  
 
 def evaluation(state:State) -> Literal["endnode", "chatbot_gemini"]:
+    print(f"Inside evalution")
     if True:
         return "endnode"
     return "chatbot_gemini"
 
 def chatbot_gemini(state:State):
+    print(f"Inside gemini")
     gemini_client = OpenAI(
     api_key=GEMINI_API_KEY,
     base_url= "https://generativelanguage.googleapis.com/v1beta/openai/"
@@ -53,6 +56,7 @@ def chatbot_gemini(state:State):
     return {"llm_output" : f"{response.choices[0].message.content}"}  
 
 def endnode(state:State):
+    print("Inside endnode")
     return state
 
 
